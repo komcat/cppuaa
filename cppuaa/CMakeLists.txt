@@ -8,8 +8,18 @@ set(SDL2_PATH "C:/Users/komgr/source/repos/SDL2")
 # Define ImGui path
 set(IMGUI_PATH "C:/Users/komgr/source/repos/imgui-master")
 
-# Include directories for SDL2 and ImGui
-include_directories(${SDL2_PATH}/include ${IMGUI_PATH} ${IMGUI_PATH}/backends)
+# Define JSON path
+set(JSON_PATH "C:/Users/komgr/source/repos/json-develop")
+
+# Include directories for SDL2, ImGui, and JSON
+include_directories(
+  ${SDL2_PATH}/include
+  ${IMGUI_PATH} ${IMGUI_PATH}/backends 
+  ${JSON_PATH}/include
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/motion/include
+)
+
 
 # Link directories for SDL2
 link_directories(${SDL2_PATH}/lib/x64)
@@ -26,7 +36,7 @@ set(IMGUI_SOURCES
 )
 
 # Add source to this project's executable
-add_executable(cppuaa cppuaa.cpp cppuaa.h ${IMGUI_SOURCES})
+add_executable(cppuaa "src/main.cpp" "src/application.h" ${IMGUI_SOURCES} "src/application.cpp" "motion/include/motion_types.h" "motion/src/motion_config_manager.cpp" "motion/src/motor_controller.cpp" "motion/include/motor_controller.h" "motion/include/motor_ui.h" "motion/src/motor_ui.cpp" "motion/include/IMotorController.h" "motion/include/MotorControllerFactory.h" "motion/include/VirtualMotorController.h" "motion/src/VirtualMotorController.cpp" "motion/include/PIMotorController.h" "motion/src/PIMotorController.cpp" "motion/include/ACSMotorController.h" "motion/src/ACSMotorController.cpp" "motion/src/MotorControllerFactory.cpp")
 
 # Link libraries
 target_link_libraries(cppuaa SDL2 SDL2main opengl32)

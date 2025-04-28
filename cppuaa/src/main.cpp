@@ -1,8 +1,22 @@
-﻿// cppuaa.cpp : Defines the entry point for the application.
-#include "cppuaa.h"
+﻿#include "application.h"
+#include "motor_ui.h"
+#include <iostream>
 
 int main(int argc, char** argv)
 {
+  // Turn off verbose logging
+  set_verbose_logging(false);
+
+  // Create and connect each controller individually
+  connect_controller(0, "192.168.1.1", 8000, MotorControllerType::PI);
+  connect_controller(1, "192.168.1.2", 8000, MotorControllerType::PI);
+  connect_controller(2, "192.168.1.3", 8000, MotorControllerType::PI);
+  connect_controller(3, "192.168.1.4", 8000, MotorControllerType::ACS);
+  connect_controller(4, "127.0.0.1", 8000, MotorControllerType::VIRTUAL);
+
+  // Finish initialization (sets active controller, etc.)
+  initialize_controllers();
+
   // Setup SDL
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
   {
@@ -23,7 +37,7 @@ int main(int argc, char** argv)
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
   SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
   SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-  SDL_Window* window = SDL_CreateWindow("Dear ImGui SDL2+OpenGL3 example", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
+  SDL_Window* window = SDL_CreateWindow("Motor Controller Interface", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
   SDL_GLContext gl_context = SDL_GL_CreateContext(window);
   SDL_GL_MakeCurrent(window, gl_context);
   SDL_GL_SetSwapInterval(1); // Enable vsync
@@ -82,6 +96,9 @@ int main(int argc, char** argv)
       ImGui::End();
     }
 
+    // Show the motor controller window
+    show_motor_controller_window();
+
     // Rendering
     ImGui::Render();
     glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
@@ -89,6 +106,9 @@ int main(int argc, char** argv)
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     SDL_GL_SwapWindow(window);
   }
+
+  // Clean up motor controller
+  cleanup_motor_controller();
 
   // Cleanup
   ImGui_ImplOpenGL3_Shutdown();
